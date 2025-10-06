@@ -5,9 +5,9 @@ services:
     runtime: node
     schedule: "*/10 * * * *"
     envVars:
-      - key: "WH0VIL5GXBQB33SIRAGI954SIRAGI"
+      - key: WH0VIL5GXBQB33SIRAGI954SIRAGI
         sync: false
-      - key: "8340665740:AAGH14ja_3UG8IauSIg2ackhUru6KBMe1Ec"
+      - key: 8340665740:AAGH14ja_3UG8IauSIg2ackhUru6KBMe1Ec
         sync: false
       - key: THRESHOLD_USD
         value: "0"          # โหมดส่งทุกครั้ง
@@ -15,7 +15,7 @@ services:
         value: "Asia/Phnom_Penh"
       - key: MONGODB_URI
         sync: false
-      - key: "mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority"
+      - key: mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority
         value: "goldbot"
       - key: MONGODB_COLL
         value: "subscribers"
@@ -30,9 +30,9 @@ services:
     buildCommand: "npm ci"
     startCommand: "npm run web"
     envVars:
-      - key: "33a42a7165b4230b8e3b64f20cb62432"
+      - key: 33a42a7165b4230b8e3b64f20cb62432
         sync: false
-      - key: "mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority"
+      - key: mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority
         sync: false
       - key: MONGODB_DB
         value: "goldbot"

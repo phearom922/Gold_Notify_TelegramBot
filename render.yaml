@@ -1,28 +1,26 @@
 services:
-  # A) CRON: ยิงตามรอบเพื่อ broadcast เฉพาะ subscribers
   - type: cron
     name: gold-telegram-cron
     runtime: node
-    schedule: "*/10 * * * *"
+    schedule: "*/30 * * * *"
     envVars:
-      - key: WH0VIL5GXBQB33SIRAGI954SIRAGI
+      - key: METALS_API_KEY
         sync: false
-      - key: 8340665740:AAGH14ja_3UG8IauSIg2ackhUru6KBMe1Ec
+      - key: TG_TOKEN
         sync: false
       - key: THRESHOLD_USD
-        value: "0"          # โหมดส่งทุกครั้ง
+        value: "0"
       - key: LOCAL_TZ
         value: "Asia/Phnom_Penh"
       - key: MONGODB_URI
         sync: false
-      - key: mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority
+      - key: MONGODB_DB
         value: "goldbot"
       - key: MONGODB_COLL
         value: "subscribers"
     buildCommand: "npm ci"
     startCommand: "npm start"
 
-  # B) WEB: webhook รับ /start แล้วบันทึก chat_id -> MongoDB
   - type: web
     name: gold-telegram-webhook
     runtime: node
@@ -30,9 +28,11 @@ services:
     buildCommand: "npm ci"
     startCommand: "npm run web"
     envVars:
-      - key: 33a42a7165b4230b8e3b64f20cb62432
+      - key: TG_WEBHOOK_SECRET
         sync: false
-      - key: mongodb+srv://ronphearom2540:Phearom090790@cluster0.4ufedff.mongodb.net/yourdb?retryWrites=true&w=majority
+      - key: TG_TOKEN
+        sync: false
+      - key: MONGODB_URI
         sync: false
       - key: MONGODB_DB
         value: "goldbot"

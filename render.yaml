@@ -3,7 +3,7 @@ services:
   - type: cron
     name: gold-telegram-cron
     runtime: node
-    schedule: "*/3 * * * *"
+    schedule: "*/10 * * * *"
     envVars:
       - key: "WH0VIL5GXBQB33SIRAGI954SIRAGI"
         sync: false

@@ -1,0 +1,18 @@
+{
+    "name": "gold-telegram-cron",
+    "version": "1.2.0",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=18"
+    },
+    "scripts": {
+        "start": "node src/index.js",
+        "web": "node src/server.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "mongodb": "^6.8.0"
+    }
+}

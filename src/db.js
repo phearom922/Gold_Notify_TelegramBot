@@ -38,6 +38,16 @@ export async function listChatIds() {
     return docs.map(d => String(d.chat_id));
 }
 
+
+export async function removeSubscriber(chat_id) {
+    const c = await getSubscribersCollection();
+    // รองรับทั้งกรณีที่เคยเก็บเป็น string หรือ number
+    const r = await c.deleteOne({
+        $or: [{ chat_id: String(chat_id) }, { chat_id: Number(chat_id) }]
+    });
+    return r.deletedCount > 0; // true = มีการลบจริง
+}
+
 // ✅ ปิด client เพื่อให้ Cron job จบโปรเซสได้
 export async function closeDb() {
     try { await client?.close(); } catch { }

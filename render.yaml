@@ -2,7 +2,7 @@ services:
   - type: cron
     name: gold-telegram-cron
     runtime: node
-    schedule: "*/30 * * * *"
+    schedule: "*/5 * * * *"
     envVars:
       - key: METALS_API_KEY
         sync: false

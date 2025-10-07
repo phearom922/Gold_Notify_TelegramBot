@@ -2,7 +2,7 @@ import "dotenv/config.js";
 import { fetchXauUsd } from "./fetchGold.js";
 import { sendTelegram } from "./notifyTelegram.js";
 import { getLastPrice, setLastPrice, usingRedis } from "./storage.js";
-import { listChatIds } from "./db.js";
+import { listChatIds, closeDb } from "./db.js";
 
 const TG_TOKEN = process.env.TG_TOKEN;
 const THRESHOLD_USD = Number(process.env.THRESHOLD_USD || 0);
@@ -22,7 +22,7 @@ function formatInTz(date, timeZone) {
     return `${g("year")}-${g("month")}-${g("day")} ${g("hour")}:${g("minute")}`;
 }
 
-async function main() {
+async function run() {
     const spot = await fetchXauUsd();
     const cur = spot.priceUsdPerOz;
 
@@ -37,11 +37,10 @@ async function main() {
 
     const isUp = spot.changeUsd > 0;
     const isDown = spot.changeUsd < 0;
-    const arrow = isUp ? "🟢🔺" : isDown ? "🔻🔴" : "⚪️";
+    const arrow = isUp ? "🟢🔺" : isDown ? "🔻🔴" : "🟢"; // เลือกไอคอนตามต้องการ
     const sign = spot.changeUsd >= 0 ? "+" : "";
     const d = normalizeToDate(spot.timestamp);
     const tsLocal = formatInTz(d, LOCAL_TZ);
-    const tsUTC = formatInTz(d, "UTC");
 
     let msg = `${arrow} *Gold Price Update (Global)*\n`;
     msg += `Spot XAU/USD: \`${fmtUSD(cur)}\`\n`;
@@ -52,7 +51,7 @@ async function main() {
         ? "📈 តម្លៃមាសលើពិភពលោក កើនឡើង ក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយនេះ។\n"
         : isDown
             ? "📉 តម្លៃមាសលើពិភពលោក បានធ្លាក់ចុះ ក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយនេះ។\n"
-            : "⏸ តម្លៃមាសលើពិភពលោក ធ្វើស្ថិរភាព ប្រៀបធៀបនឹងម្សិលមិញ។\n";
+            : "⏸ តម្លៃមាសលើពិភពលោក មានស្ថិរភាព ប្រៀបធៀបនឹងម្សិលមិញ។\n";
     msg += `#gold #XAUUSD`;
 
     if (!shouldNotify) {
@@ -60,10 +59,9 @@ async function main() {
         return;
     }
 
-    // ✅ ส่งเฉพาะ subscribers ใน MongoDB
     const targets = await listChatIds();
     if (targets.length === 0) {
-        console.log("No subscribers yet. (Ask users to /start the bot)");
+        console.log("No subscribers yet.");
         return;
     }
 
@@ -79,4 +77,17 @@ async function main() {
     if (usingRedis) await setLastPrice(cur);
 }
 
-main().catch(e => { console.error("Job failed:", e); process.exit(1); });
+async function main() {
+    try {
+        await run();
+    } finally {
+        await closeDb();           // ✅ ปิด DB
+    }
+}
+
+main()
+    .then(() => process.exit(0)) // ✅ ออกจากโปรเซสอย่างชัดเจน
+    .catch(e => {
+        console.error("Job failed:", e);
+        closeDb().finally(() => process.exit(1));
+    });

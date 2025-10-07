@@ -4,7 +4,6 @@ const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "goldbot";
 const collName = process.env.MONGODB_COLL || "subscribers";
 
-// แชร์ client ข้ามไฟล์/รัน เพื่อประหยัด connection
 let client, coll;
 
 export async function getSubscribersCollection() {
@@ -17,7 +16,6 @@ export async function getSubscribersCollection() {
     }
     const db = client.db(dbName);
     coll = db.collection(collName);
-    // index ป้องกันซ้ำ
     await coll.createIndex({ chat_id: 1 }, { unique: true });
     return coll;
 }
@@ -38,4 +36,11 @@ export async function listChatIds() {
     const c = await getSubscribersCollection();
     const docs = await c.find({}, { projection: { chat_id: 1, _id: 0 } }).toArray();
     return docs.map(d => String(d.chat_id));
+}
+
+// ✅ ปิด client เพื่อให้ Cron job จบโปรเซสได้
+export async function closeDb() {
+    try { await client?.close(); } catch { }
+    client = undefined;
+    coll = undefined;
 }

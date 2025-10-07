@@ -43,7 +43,8 @@ app.post("/tg/webhook", (req, res) => {
                     const welcome =
                         `សួស្តី ${name} 👋  
 អ្នកបានចុះឈ្មោះដើម្បីទទួលការជូនដំណឹងតម្លៃមាសប្រចាំថ្ងៃហើយ 💰\n  
-បើចង់ឈប់ទទួលការជូនដំណឹងសូមផ្ញើ /stop មកខ្ញុំ។`;
+បើចង់ឈប់ទទួលការជូនដំណឹងសូមផ្ញើ /stop មកខ្ញុំ។ \n
+តម្លៃមាសនឹងត្រូវផ្ញើទៅអ្នករៀងរាល់ 30នាទីម្តង។`;
                     await sendTelegram({ token: TG_TOKEN, chatId: String(chat_id), text: welcome, parseMode: "Markdown" });
                     log("welcomed", chat_id);
                 }
